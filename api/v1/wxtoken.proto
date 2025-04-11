@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package wxtoken.api.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "wxtoken/api/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.v1";
+
+service Token {
+	rpc GetAccessToken (GetTokenRequest) returns (GetTokenReply){
+		option (google.api.http) = {
+			get: "/token/v1/get_access_token"
+		};
+	}
+	rpc RefreshAccessToken (RefreshTokenRequest) returns (RefreshTokenReply){
+		option (google.api.http) = {
+			post: "/token/v1/refresh_access_token"
+			body: "*"
+		};
+	}
+	rpc ForceRefreshAccessToken (ForceRefreshTokenRequest) returns (ForceRefreshTokenReply){
+		option (google.api.http) = {
+			post: "/token/v1/force_refresh_access_token"
+			body: "*"
+		};
+	}
+}
+
+message GetTokenRequest {
+	uint64 appId = 1;
+	string mpId = 2;
+}
+
+message GetTokenReply {
+	string accessToken = 1;
+	uint64 expiresIn = 2;
+}
+
+message RefreshTokenRequest {
+	uint64 appId = 1;
+	string mpId = 2;
+	bool forceRefresh = 3;
+}
+
+message RefreshTokenReply {
+	uint64 appId = 1;
+	string mpId = 2;
+	string accessToken = 3;
+	uint64 expiresIn = 4;
+	int64 deadline = 5;
+}
+
+message ForceRefreshTokenRequest {
+	uint64 appId = 1;
+	string mpId = 2;
+	bool forceRefresh = 3;
+}
+
+message ForceRefreshTokenReply {
+	uint64 appId = 1;
+	string mpId = 2;
+	string accessToken = 3;
+	uint64 expiresIn = 4;
+	int64 deadline = 5;
+}
