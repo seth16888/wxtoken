@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type AccessToken struct {
 	Id          uint           `json:"id" gorm:"primaryKey;autoIncrement"`
-	AppId       uint64         `gorm:"column:app_id"`
+	AppId       string         `gorm:"column:app_id"`
 	MpId        string         `gorm:"column:mp_id"`
 	AccessToken string         `gorm:"column:access_token;size:512"`
 	Deadline    int64          `gorm:"column:deadline"`

@@ -23,7 +23,7 @@ type WXAccessTokenRes struct {
 }
 
 type AccessTokenRes struct {
-	AppId       uint64
+	AppId       string
 	MpId        string
 	AccessToken string
 	ExpiresIn   uint64
@@ -62,7 +62,7 @@ func NewTokenUsecase(repo AccessTokenRepo, logger *zap.Logger,
 	}
 }
 
-func (p *TokenUsecase) Get(ctx context.Context, appId uint64, mpId string) (*AccessTokenRes, error) {
+func (p *TokenUsecase) Get(ctx context.Context, appId string, mpId string) (*AccessTokenRes, error) {
 	accessTokenRes := p.loadAccessToken(ctx, mpId)
 
 	if accessTokenRes == nil || p.isNeedRefresh(accessTokenRes) { // 缓存和数据库中都不存在
@@ -89,7 +89,7 @@ func (p *TokenUsecase) Get(ctx context.Context, appId uint64, mpId string) (*Acc
 	return accessTokenRes, nil
 }
 
-func (p *TokenUsecase) Refresh(ctx context.Context, appId uint64, mpId string) (*AccessTokenRes, error) {
+func (p *TokenUsecase) Refresh(ctx context.Context, appId string, mpId string) (*AccessTokenRes, error) {
 	token, wxErr := p.doFetch(ctx, appId, mpId, false)
 	if wxErr == nil {
 		return token, nil
@@ -109,7 +109,7 @@ func (p *TokenUsecase) Refresh(ctx context.Context, appId uint64, mpId string) (
 }
 
 // ForceRefresh 强制刷新
-func (p *TokenUsecase) ForceRefresh(ctx context.Context, appId uint64, mpId string, force bool) (*AccessTokenRes, error) {
+func (p *TokenUsecase) ForceRefresh(ctx context.Context, appId string, mpId string, force bool) (*AccessTokenRes, error) {
 	token, wxErr := p.doFetch(ctx, appId, mpId, force)
 	if wxErr == nil {
 		return token, nil
@@ -182,7 +182,7 @@ func (p *TokenUsecase) isNeedRefresh(accessToken *AccessTokenRes) bool {
 }
 
 // doFetch 从微信获取
-func (p *TokenUsecase) doFetch(ctx context.Context, appId uint64,
+func (p *TokenUsecase) doFetch(ctx context.Context, appId string,
   mpId string, force bool) (*AccessTokenRes, *wxErr.WXError) {
 	secret := ""
 	secretCached, err := cache.CacheRepo.Get("secret_" + mpId)
@@ -204,7 +204,7 @@ func (p *TokenUsecase) doFetch(ctx context.Context, appId uint64,
 }
 
 // fetchFromWX 从微信获取
-func (p *TokenUsecase) fetchFromWX(ctx context.Context, appId uint64,
+func (p *TokenUsecase) fetchFromWX(ctx context.Context, appId string,
   mpId string, secret string, force bool) (*AccessTokenRes, *wxErr.WXError) {
 	bodyJson := GetWXStableAccessTokenReq{
 		GrantType:    "client_credential",

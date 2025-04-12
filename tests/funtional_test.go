@@ -115,7 +115,7 @@ func TestGetToken(t *testing.T) {
   Convey("When get token", t, func() {
     client := v1.NewTokenClient(conn)
     req := &v1.GetTokenRequest{
-      AppId: 1001,
+      AppId: "1001",
       MpId: "string",
     }
 

@@ -7,5 +7,5 @@ import (
 )
 
 type AppRepo interface {
-	GetSecret(context.Context, uint64) (*entities.PlatformAppEntity, error)
+	GetSecret(context.Context, string) (*entities.PlatformAppEntity, error)
 }

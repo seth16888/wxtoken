@@ -22,7 +22,7 @@ func NewWXTokenService(log *zap.Logger,uc *biz.TokenUsecase) *WXTokenService {
 }
 
 func (s *WXTokenService) GetAccessToken(ctx context.Context, in *v1.GetTokenRequest) (*v1.GetTokenReply, error) {
-	s.log.Debug("GetAccessToken", zap.String("mpId", in.GetMpId()), zap.Uint64("appId", in.GetAppId()))
+	s.log.Debug("GetAccessToken", zap.String("mpId", in.GetMpId()), zap.String("appId", in.GetAppId()))
 	token, err := s.uc.Get(ctx, in.GetAppId(), in.GetMpId())
 	if err != nil {
 		return nil, status.Error(10400, err.Error())
@@ -34,7 +34,7 @@ func (s *WXTokenService) GetAccessToken(ctx context.Context, in *v1.GetTokenRequ
 }
 
 func (s *WXTokenService) RefreshAccessToken(ctx context.Context, in *v1.RefreshTokenRequest) (*v1.RefreshTokenReply, error) {
-	s.log.Debug("RefreshAccessToken", zap.String("mpId", in.GetMpId()), zap.Uint64("appId", in.GetAppId()))
+	s.log.Debug("RefreshAccessToken", zap.String("mpId", in.GetMpId()), zap.String("appId", in.GetAppId()))
 	token, err := s.uc.Refresh(ctx, in.GetAppId(), in.GetMpId())
 	if err != nil {
 		return nil, status.Error(10401, err.Error())
@@ -49,7 +49,7 @@ func (s *WXTokenService) RefreshAccessToken(ctx context.Context, in *v1.RefreshT
 }
 
 func (s *WXTokenService) ForceRefreshAccessToken(ctx context.Context, in *v1.ForceRefreshTokenRequest) (*v1.ForceRefreshTokenReply, error) {
-	s.log.Debug("ForceRefreshAccessToken", zap.String("mpId", in.GetMpId()), zap.Uint64("appId", in.GetAppId()))
+	s.log.Debug("ForceRefreshAccessToken", zap.String("mpId", in.GetMpId()), zap.String("appId", in.GetAppId()))
 	token, err := s.uc.ForceRefresh(ctx, in.GetAppId(), in.GetMpId(), in.GetForceRefresh())
 	if err != nil {
 		return nil, status.Error(10402, err.Error())

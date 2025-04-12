@@ -24,7 +24,7 @@ const (
 
 type GetTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint64                 `protobuf:"varint,1,opt,name=appId,proto3" json:"appId,omitempty"`
+	AppId         string                 `protobuf:"bytes,1,opt,name=appId,proto3" json:"appId,omitempty"`
 	MpId          string                 `protobuf:"bytes,2,opt,name=mpId,proto3" json:"mpId,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -60,11 +60,11 @@ func (*GetTokenRequest) Descriptor() ([]byte, []int) {
 	return file_v1_wxtoken_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GetTokenRequest) GetAppId() uint64 {
+func (x *GetTokenRequest) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
-	return 0
+	return ""
 }
 
 func (x *GetTokenRequest) GetMpId() string {
@@ -128,7 +128,7 @@ func (x *GetTokenReply) GetExpiresIn() uint64 {
 
 type RefreshTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint64                 `protobuf:"varint,1,opt,name=appId,proto3" json:"appId,omitempty"`
+	AppId         string                 `protobuf:"bytes,1,opt,name=appId,proto3" json:"appId,omitempty"`
 	MpId          string                 `protobuf:"bytes,2,opt,name=mpId,proto3" json:"mpId,omitempty"`
 	ForceRefresh  bool                   `protobuf:"varint,3,opt,name=forceRefresh,proto3" json:"forceRefresh,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -165,11 +165,11 @@ func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
 	return file_v1_wxtoken_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *RefreshTokenRequest) GetAppId() uint64 {
+func (x *RefreshTokenRequest) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
-	return 0
+	return ""
 }
 
 func (x *RefreshTokenRequest) GetMpId() string {
@@ -188,7 +188,7 @@ func (x *RefreshTokenRequest) GetForceRefresh() bool {
 
 type RefreshTokenReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint64                 `protobuf:"varint,1,opt,name=appId,proto3" json:"appId,omitempty"`
+	AppId         string                 `protobuf:"bytes,1,opt,name=appId,proto3" json:"appId,omitempty"`
 	MpId          string                 `protobuf:"bytes,2,opt,name=mpId,proto3" json:"mpId,omitempty"`
 	AccessToken   string                 `protobuf:"bytes,3,opt,name=accessToken,proto3" json:"accessToken,omitempty"`
 	ExpiresIn     uint64                 `protobuf:"varint,4,opt,name=expiresIn,proto3" json:"expiresIn,omitempty"`
@@ -227,11 +227,11 @@ func (*RefreshTokenReply) Descriptor() ([]byte, []int) {
 	return file_v1_wxtoken_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *RefreshTokenReply) GetAppId() uint64 {
+func (x *RefreshTokenReply) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
-	return 0
+	return ""
 }
 
 func (x *RefreshTokenReply) GetMpId() string {
@@ -264,7 +264,7 @@ func (x *RefreshTokenReply) GetDeadline() int64 {
 
 type ForceRefreshTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint64                 `protobuf:"varint,1,opt,name=appId,proto3" json:"appId,omitempty"`
+	AppId         string                 `protobuf:"bytes,1,opt,name=appId,proto3" json:"appId,omitempty"`
 	MpId          string                 `protobuf:"bytes,2,opt,name=mpId,proto3" json:"mpId,omitempty"`
 	ForceRefresh  bool                   `protobuf:"varint,3,opt,name=forceRefresh,proto3" json:"forceRefresh,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -301,11 +301,11 @@ func (*ForceRefreshTokenRequest) Descriptor() ([]byte, []int) {
 	return file_v1_wxtoken_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *ForceRefreshTokenRequest) GetAppId() uint64 {
+func (x *ForceRefreshTokenRequest) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
-	return 0
+	return ""
 }
 
 func (x *ForceRefreshTokenRequest) GetMpId() string {
@@ -324,7 +324,7 @@ func (x *ForceRefreshTokenRequest) GetForceRefresh() bool {
 
 type ForceRefreshTokenReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint64                 `protobuf:"varint,1,opt,name=appId,proto3" json:"appId,omitempty"`
+	AppId         string                 `protobuf:"bytes,1,opt,name=appId,proto3" json:"appId,omitempty"`
 	MpId          string                 `protobuf:"bytes,2,opt,name=mpId,proto3" json:"mpId,omitempty"`
 	AccessToken   string                 `protobuf:"bytes,3,opt,name=accessToken,proto3" json:"accessToken,omitempty"`
 	ExpiresIn     uint64                 `protobuf:"varint,4,opt,name=expiresIn,proto3" json:"expiresIn,omitempty"`
@@ -363,11 +363,11 @@ func (*ForceRefreshTokenReply) Descriptor() ([]byte, []int) {
 	return file_v1_wxtoken_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *ForceRefreshTokenReply) GetAppId() uint64 {
+func (x *ForceRefreshTokenReply) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
-	return 0
+	return ""
 }
 
 func (x *ForceRefreshTokenReply) GetMpId() string {
@@ -404,27 +404,27 @@ const file_v1_wxtoken_proto_rawDesc = "" +
 	"\n" +
 	"\x10v1/wxtoken.proto\x12\x0ewxtoken.api.v1\x1a\x1cgoogle/api/annotations.proto\";\n" +
 	"\x0fGetTokenRequest\x12\x14\n" +
-	"\x05appId\x18\x01 \x01(\x04R\x05appId\x12\x12\n" +
+	"\x05appId\x18\x01 \x01(\tR\x05appId\x12\x12\n" +
 	"\x04mpId\x18\x02 \x01(\tR\x04mpId\"O\n" +
 	"\rGetTokenReply\x12 \n" +
 	"\vaccessToken\x18\x01 \x01(\tR\vaccessToken\x12\x1c\n" +
 	"\texpiresIn\x18\x02 \x01(\x04R\texpiresIn\"c\n" +
 	"\x13RefreshTokenRequest\x12\x14\n" +
-	"\x05appId\x18\x01 \x01(\x04R\x05appId\x12\x12\n" +
+	"\x05appId\x18\x01 \x01(\tR\x05appId\x12\x12\n" +
 	"\x04mpId\x18\x02 \x01(\tR\x04mpId\x12\"\n" +
 	"\fforceRefresh\x18\x03 \x01(\bR\fforceRefresh\"\x99\x01\n" +
 	"\x11RefreshTokenReply\x12\x14\n" +
-	"\x05appId\x18\x01 \x01(\x04R\x05appId\x12\x12\n" +
+	"\x05appId\x18\x01 \x01(\tR\x05appId\x12\x12\n" +
 	"\x04mpId\x18\x02 \x01(\tR\x04mpId\x12 \n" +
 	"\vaccessToken\x18\x03 \x01(\tR\vaccessToken\x12\x1c\n" +
 	"\texpiresIn\x18\x04 \x01(\x04R\texpiresIn\x12\x1a\n" +
 	"\bdeadline\x18\x05 \x01(\x03R\bdeadline\"h\n" +
 	"\x18ForceRefreshTokenRequest\x12\x14\n" +
-	"\x05appId\x18\x01 \x01(\x04R\x05appId\x12\x12\n" +
+	"\x05appId\x18\x01 \x01(\tR\x05appId\x12\x12\n" +
 	"\x04mpId\x18\x02 \x01(\tR\x04mpId\x12\"\n" +
 	"\fforceRefresh\x18\x03 \x01(\bR\fforceRefresh\"\x9e\x01\n" +
 	"\x16ForceRefreshTokenReply\x12\x14\n" +
-	"\x05appId\x18\x01 \x01(\x04R\x05appId\x12\x12\n" +
+	"\x05appId\x18\x01 \x01(\tR\x05appId\x12\x12\n" +
 	"\x04mpId\x18\x02 \x01(\tR\x04mpId\x12 \n" +
 	"\vaccessToken\x18\x03 \x01(\tR\vaccessToken\x12\x1c\n" +
 	"\texpiresIn\x18\x04 \x01(\x04R\texpiresIn\x12\x1a\n" +

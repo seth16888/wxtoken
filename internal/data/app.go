@@ -23,7 +23,7 @@ func NewAppRepo(data *gorm.DB, logger *zap.Logger) biz.AppRepo {
 	}
 }
 
-func (p *AppRepo) GetSecret(ctx context.Context, id uint64) (*entities.PlatformAppEntity, error) {
+func (p *AppRepo) GetSecret(ctx context.Context, id string) (*entities.PlatformAppEntity, error) {
 	c, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 

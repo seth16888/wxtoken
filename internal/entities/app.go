@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 // PlatformAppEntity 公众号平台账号
 type PlatformAppEntity struct {
-	Id             uint           `json:"id" gorm:"primaryKey;autoIncrement"`
+	Id             string         `json:"id" gorm:"primaryKey"`
 	UserId         uint           `json:"userId" gorm:"not null,comment:用户id"`
 	Name           string         `json:"name" gorm:"not null,comment:公众号名称"`
 	PicUrl         string         `json:"picUrl" gorm:"not null,comment:公众号图标"`
