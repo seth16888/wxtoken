@@ -8,6 +8,7 @@ import (
 
 	v1 "github.com/seth16888/wxtoken/api/v1"
 	"github.com/seth16888/wxtoken/internal/di"
+	"github.com/seth16888/wxtoken/internal/middleware"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -30,29 +31,31 @@ func Start(deps *di.Container) error {
 	}
 
 	s := grpc.NewServer(
-		// grpc.ChainUnaryInterceptor(
-		// 	middleware.TimeoutInterceptor(),
-		// 	middleware.RequestID(),
-		// 	middleware.LoggingInterceptor(deps.Log),
-		// 	middleware.ClientDisconnectInterceptor(),
-		// 	middleware.RecoverInterceptor(deps.Log),
-		// ),
+		grpc.ChainUnaryInterceptor(
+			middleware.TimeoutInterceptor(),
+			middleware.RequestID(),
+			middleware.LoggingInterceptor(deps.Log),
+			middleware.ClientDisconnectInterceptor(),
+			middleware.RecoverInterceptor(deps.Log),
+		),
     // 明文传输
     grpc.Creds(insecure.NewCredentials()),
 	)
 	v1.RegisterTokenServer(s, deps.Svc)
 	// 健康检查
-	// healthSvc := healthsvc.NewServer()
-	// healthpb.RegisterHealthServer(s, healthSvc)
-	// updateHealthStatus(healthSvc, v1.Token_ServiceDesc.ServiceName,
-	// 	healthpb.HealthCheckResponse_SERVING)
+	healthSvc := healthsvc.NewServer()
+	healthpb.RegisterHealthServer(s, healthSvc)
+	updateHealthStatus(healthSvc, v1.Token_ServiceDesc.ServiceName,
+		healthpb.HealthCheckResponse_SERVING)
 
 	deps.Log.Info("starting grpc server", zap.String("addr", listenAddr))
 	errCh := make(chan error, 1)
-	defer func() {
+	go func() {
 		if err := s.Serve(listener); err != grpc.ErrServerStopped {
 			deps.Log.Error("failed to serve", zap.Error(err))
 			errCh <- err
+		} else {
+			deps.Log.Info("grpc server stopped")
 		}
 	}()
 
@@ -61,14 +64,14 @@ func Start(deps *di.Container) error {
 
 	select {
 	case <-sigCh:
-		// updateHealthStatus(healthSvc, v1.Token_ServiceDesc.ServiceName,
-		// 	healthpb.HealthCheckResponse_NOT_SERVING)
+		updateHealthStatus(healthSvc, v1.Token_ServiceDesc.ServiceName,
+			healthpb.HealthCheckResponse_NOT_SERVING)
 		deps.Log.Info("shutting down grpc server gracefully...")
 		s.GracefulStop()
 		deps.Log.Sync() // 确保日志同步
 	case err := <-errCh:
-		// updateHealthStatus(healthSvc, v1.Token_ServiceDesc.ServiceName,
-		// 	healthpb.HealthCheckResponse_NOT_SERVING)
+		updateHealthStatus(healthSvc, v1.Token_ServiceDesc.ServiceName,
+			healthpb.HealthCheckResponse_NOT_SERVING)
 		deps.Log.Sync() // 确保日志同步
 		return err
 	}
