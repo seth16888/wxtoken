@@ -1,16 +1,12 @@
 package biz
 
 import (
-	"github.com/google/wire"
 	"github.com/seth16888/wxcommon/hc"
 	"github.com/seth16888/wxcommon/redis"
 	"github.com/seth16888/wxtoken/internal/cache"
 	"github.com/seth16888/wxtoken/internal/config"
 	"go.uber.org/zap"
 )
-
-// ProviderSet is biz providers.
-var ProviderSet = wire.NewSet(NewTokenUsecase, NewHttpClient, NewRedisClient, NewCacheRepo)
 
 func NewHttpClient() *hc.Client {
 	return hc.NewClient(hc.DefaultTimeout, hc.DefaultIdleConnTimeout, hc.CommonCheckRedirect)

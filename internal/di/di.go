@@ -8,17 +8,15 @@ import (
 	"github.com/seth16888/wxtoken/internal/cache"
 	"github.com/seth16888/wxtoken/internal/config"
 	"github.com/seth16888/wxtoken/internal/data"
-	"github.com/seth16888/wxtoken/internal/database"
 	"github.com/seth16888/wxtoken/internal/service"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
 
 var DI *Container
 
 type Container struct {
 	Conf *config.Bootstrap
-	DB   *gorm.DB // 数据库连接
+  DB                 *data.Data   // 数据库连接
 	Log  *zap.Logger
 	Svc  *service.WXTokenService
   Redis *redis.RedisClient
@@ -28,10 +26,7 @@ func NewContainer(configFile string) *Container {
   conf:= config.ReadConfigFromFile(configFile)
   log := logger.InitLogger(conf.Log)
 
-  db,err := database.NewDB(conf.Database)
-  if err != nil {
-    log.Fatal("failed to connect database", zap.Error(err))
-  }
+  db := data.NewData(conf.Database, log)
 
   redis.ConnectRedis(conf.Redis.Addr, conf.Redis.Username,
     conf.Redis.Password, conf.Redis.DB, log)

@@ -1,20 +1,16 @@
 package entities
 
-import "gorm.io/gorm"
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type AccessToken struct {
-	Id          uint           `json:"id" gorm:"primaryKey;autoIncrement"`
-	AppId       string         `gorm:"column:app_id"`
-	MpId        string         `gorm:"column:mp_id"`
-	AccessToken string         `gorm:"column:access_token;size:512"`
-	Deadline    int64          `gorm:"column:deadline"`
-	ExpiresIn   uint64         `gorm:"column:expires_in"`
-	CreatedAt   int64          `json:"createdAt" gorm:"autoCreateTime:milli"`
-	UpdatedAt   int64          `json:"updatedAt" gorm:"autoUpdateTime:milli"`
-	DeletedAt   gorm.DeletedAt `json:"deletedAt" gorm:"index"`
-	Version     int64          `json:"-"`
-}
-
-func (AccessToken) TableName() string {
-	return "mp_access_token"
+	Id          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	AppId       string             `bson:"app_id" json:"app_id"`
+	MpId        string             `bson:"mp_id" json:"mp_id"`
+	AccessToken string             `bson:"access_token" json:"access_token"`
+	Deadline    int64              `bson:"deadline" json:"deadline"`
+	ExpiresIn   uint64             `bson:"expires_in" json:"expires_in"`
+	CreatedAt   int64              `bson:"created_at" json:"created_at"`
+	UpdatedAt   int64              `bson:"updated_at" json:"updated_at"`
+	DeletedAt   int64              `bson:"deleted_at" json:"deleted_at"`
+	Version     int64              `bson:"version" json:"-"`
 }

@@ -39,7 +39,7 @@ type GetWXStableAccessTokenReq struct {
 
 type AccessTokenRepo interface {
 	Get(ctx context.Context, mpId string) (*entities.AccessToken, error)
-	Save(ctx context.Context, entity *entities.AccessToken) (uint, error)
+	Save(ctx context.Context, entity *entities.AccessToken) (string, error)
 	GetNeedRefresh(ctx context.Context, deadline int64, limit int) ([]*entities.AccessToken, error)
 }
 

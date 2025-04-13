@@ -6,61 +6,91 @@ import (
 
 	"github.com/seth16888/wxtoken/internal/biz"
 	"github.com/seth16888/wxtoken/internal/entities"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type AccessTokenRepo struct {
-	data *gorm.DB
+	col  *mongo.Collection
+	data *Data
 	log  *zap.Logger
 }
 
-func NewAccessTokenRepo(data *gorm.DB, logger *zap.Logger) biz.AccessTokenRepo {
+func NewAccessTokenRepo(data *Data, logger *zap.Logger) biz.AccessTokenRepo {
+	collection := data.db.Collection("mp_access_token")
 	return &AccessTokenRepo{
+		col:  collection,
 		data: data,
 		log:  logger,
 	}
 }
 
+// Get 根据mpId获取访问令牌
 func (p *AccessTokenRepo) Get(ctx context.Context, mpId string) (*entities.AccessToken, error) {
 	c, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
+	filter := bson.M{"mp_id": mpId}
 	token := &entities.AccessToken{}
-	if err := p.data.WithContext(c).Where("mp_id = ?", mpId).First(token).Error; err != nil {
+
+	err := p.col.FindOne(c, filter).Decode(token)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
 		return nil, err
 	}
 
 	return token, nil
 }
 
-func (p *AccessTokenRepo) Save(ctx context.Context, entity *entities.AccessToken) (uint, error) {
+// Save 保存或更新访问令牌
+func (p *AccessTokenRepo) Save(ctx context.Context, entity *entities.AccessToken) (string, error) {
 	c, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	tx := p.data.WithContext(c).Clauses(
-		clause.OnConflict{
-			Columns:   []clause.Column{{Name: "id"}, {Name: "app_id"}},
-			UpdateAll: true,
-		},
-	).Create(entity)
+	filter := bson.M{"mp_id": entity.MpId}
+	update := bson.M{"$set": entity}
+	opts := options.Update().SetUpsert(true)
 
-	if tx.Error != nil {
-		return 0, tx.Error
+	result, err := p.col.UpdateOne(c, filter, update, opts)
+	if err != nil {
+		return "", err
 	}
 
-	return entity.Id, nil
+	if result.UpsertedID != nil {
+		if oid, ok := result.UpsertedID.(primitive.ObjectID); ok {
+			return oid.Hex(), nil
+		}
+	}
+
+	return entity.Id.Hex(), nil
 }
 
+// GetNeedRefresh 获取需要刷新的访问令牌列表
 func (p *AccessTokenRepo) GetNeedRefresh(ctx context.Context, deadline int64, limit int) ([]*entities.AccessToken, error) {
 	c, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var rows []*entities.AccessToken
-	tx := p.data.WithContext(c).Where("deadline <= ?", deadline).Limit(limit).Order("deadline ASC").Find(&rows)
-	if tx.Error != nil {
-		return nil, tx.Error
+	opts := options.Find().
+		SetSort(bson.M{"deadline": 1}).
+		SetLimit(int64(limit))
+
+	filter := bson.M{"deadline": bson.M{"$lte": deadline}}
+
+	cursor, err := p.col.Find(c, filter, opts)
+	if err != nil {
+		return nil, err
 	}
-	return rows, nil
+	defer cursor.Close(c)
+
+	var tokens []*entities.AccessToken
+	if err = cursor.All(c, &tokens); err != nil {
+		return nil, err
+	}
+
+	return tokens, nil
 }

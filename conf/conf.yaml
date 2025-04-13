@@ -1,5 +1,5 @@
 server:
-  addr: 0.0.0.0:9000
+  addr: 127.0.0.1:10301
   timeout: 15
 log:
   level: debug
@@ -9,8 +9,13 @@ log:
   max_backups: 3
   compress: false
 database:
-  driver: mysql
-  source: root:123456@tcp(127.0.0.1:13306)/wxtoken?parseTime=True&loc=Local&multiStatements=true&charset=utf8mb4
+  driver: mongodb
+  source: mongodb://127.0.0.1:27017
+  database_name: wxtoken
+  max_pool_size: 100
+  min_pool_size: 10
+  max_idle_time: 3600
+  log_level: info
 redis:
   addr: 127.0.0.1:6379
   bd: 0

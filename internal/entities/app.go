@@ -1,27 +1,22 @@
 package entities
 
-import "gorm.io/gorm"
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
-// PlatformAppEntity 公众号平台账号
-type PlatformAppEntity struct {
-	Id             string         `json:"id" gorm:"primaryKey"`
-	UserId         uint           `json:"userId" gorm:"not null,comment:用户id"`
-	Name           string         `json:"name" gorm:"not null,comment:公众号名称"`
-	PicUrl         string         `json:"picUrl" gorm:"not null,comment:公众号图标"`
-	Type           int            `json:"type" gorm:"not null,comment:公众号类型"`
-	Introduction   string         `json:"introduction" gorm:"comment:介绍"`
-	Token          string         `json:"token" gorm:"not null,comment:接口验证token"`
-	EncodingAesKey string         `json:"encodingAESKey" gorm:"not null,comment:消息加密密钥EncodingAESKey"`
-	EncodingType   int            `json:"encodingType" gorm:"not null,comment:消息加密方式:1-明文,2-兼容,3-安全"`
-	AppId          string         `json:"appId" gorm:"not null,comment:公众号appid"`
-	AppSecret      string         `json:"appSecret" gorm:"not null,comment:公众号appsecret"`
-	Status         int            `json:"status" gorm:"not null,default:0,comment:状态:0-未验证,1-验证失败,2-验证成功,3-接入成功"`
-	CreatedAt      int64          `json:"createdAt" gorm:"autoCreateTime:milli"`
-	UpdatedAt      int64          `json:"updatedAt" gorm:"autoUpdateTime:milli"`
-	DeletedAt      gorm.DeletedAt `json:"deletedAt" gorm:"index"`
-	Version        int64          `json:"-"`
-}
-
-func (*PlatformAppEntity) TableName() string {
-	return "platform_app"
+type PlatformApp struct {
+	ID             primitive.ObjectID `bson:"_id,omitempty" json:"id"` // MongoDB的主键字段
+	UserId         string             `bson:"user_id" json:"user_id"`
+	Name           string             `bson:"name" json:"name"`
+	Type           int64              `bson:"type" json:"type"`
+	Token          string             `bson:"token" json:"token"`
+	EncodingAesKey string             `bson:"encoding_aes_key" json:"encoding_aes_key"`
+	EncodingType   int                `bson:"encoding_type" json:"encoding_type"`
+	AppId          string             `bson:"app_id" json:"app_id"` // 公众号appid
+	AppSecret      string             `bson:"app_secret" json:"app_secret"`
+	Status         int                `bson:"status" json:"status"`
+	Introduction   string             `bson:"introduction" json:"introduction"`
+	PicUrl         string             `bson:"pic_url" json:"pic_url"`
+	CreatedAt      int64              `bson:"created_at" json:"created_at"`
+	UpdatedAt      int64              `bson:"updated_at" json:"updated_at"`
+	DeletedAt      int64              `bson:"deleted_at" json:"deleted_at"`
+	Version        int64              `bson:"version" json:"-"`
 }
