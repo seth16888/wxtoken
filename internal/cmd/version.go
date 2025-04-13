@@ -7,15 +7,17 @@ import (
 )
 
 var (
-	Version = "v0.0.1"
+	Version string
 )
+
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version",
 	Long:  `Print the version of the application`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(Version)
+		// Print the version
+    fmt.Println("Version:", Version)
 	},
 }
 

@@ -65,5 +65,3 @@ require (
 	github.com/spf13/viper v1.20.1
 	go.mongodb.org/mongo-driver v1.17.3
 )
-
-replace github.com/seth16888/wxcommon v0.0.1 => ../wxcommon
