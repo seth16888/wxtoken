@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/seth16888/wxtoken/internal/biz"
@@ -39,7 +40,7 @@ func (p *AccessTokenRepo) Get(ctx context.Context, mpId string) (*entities.Acces
 	err := p.col.FindOne(c, filter).Decode(token)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return nil, nil
+			return nil, fmt.Errorf("data not found")
 		}
 		return nil, err
 	}
