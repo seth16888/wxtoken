@@ -189,7 +189,8 @@ func (p *TokenUsecase) doFetch(ctx context.Context, appId string,
 	if err != nil {
 		app, err := p.appRepo.GetSecret(ctx, appId)
 		if err != nil {
-			p.log.Debug("get secret error",zap.Error(err), zap.String("mpId", mpId))
+			p.log.Debug("get secret error",zap.Error(err), zap.String("appId", appId),
+       zap.String("mpId", mpId))
 			return nil, &wxErr.WXError{ErrCode: 500, ErrMsg: err.Error()}
 		}
 		secret = app.AppSecret
