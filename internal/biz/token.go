@@ -213,8 +213,9 @@ func (p *TokenUsecase) fetchFromWX(ctx context.Context, appId string,
 		Secret:       secret,
 		ForceRefresh: force,
 	}
+  p.log.Debug("fetchFromWX", zap.Any("req", bodyJson))
 
-	reader, err := helpers.BuildRequestBody[GetWXStableAccessTokenReq](bodyJson)
+	reader, err := helpers.BuildRequestBody(bodyJson)
 	if err != nil {
 		p.log.Error("build request body error", zap.Error(err))
 		return nil, &wxErr.WXError{ErrCode: 500, ErrMsg: err.Error()}
@@ -232,11 +233,17 @@ func (p *TokenUsecase) fetchFromWX(ctx context.Context, appId string,
 		p.log.Error("access WX server error", zap.Error(err))
 		return nil, &wxErr.WXError{ErrCode: 500, ErrMsg: err.Error()}
 	}
-	result, wxErr2 := helpers.BuildHttpResponse[WXAccessTokenRes](resp, err)
-	if wxErr2 != nil {
+
+  type resultT struct {
+    wxErr.WXError
+    WXAccessTokenRes
+  }
+	result, wxErr2 := helpers.BuildHttpResponse[resultT](resp, err)
+	if wxErr2 != nil && wxErr2.ErrCode != 0 {
 		p.log.Error("build http response error", zap.Error(wxErr2))
 		return nil, &wxErr.WXError{ErrCode: wxErr2.ErrCode, ErrMsg: wxErr2.ErrMsg}
 	}
+  p.log.Debug("fetchFromWX", zap.Any("AK", result))
 
 	// 计算deadline
 	token := &AccessTokenRes{

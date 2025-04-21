@@ -59,6 +59,7 @@ func (p *AccessTokenRepo) Save(ctx context.Context, entity *entities.AccessToken
 
 	result, err := p.col.UpdateOne(c, filter, update, opts)
 	if err != nil {
+    p.log.Error("Save", zap.Error(err))
 		return "", err
 	}
 
